@@ -28,3 +28,6 @@ if ( isset($_POST['user'], $_POST['pass']) ) {
 	<p>Password: <input type="password" name="pass" /></p>
 	<p><input type="submit" value="Log in" /></p>
 </form>
+
+<p>Credentials are encrypted and ONLY saved on YOUR device in a cookie.</p>
+<p><a href="https://github.com/rudiedirkx/Instapaper">Code @ Github</a></p>
