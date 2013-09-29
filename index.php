@@ -2,13 +2,17 @@
 
 require 'inc.bootstrap.php';
 
-
-
 $auth = ip_token();
+// var_dump($auth);
 define('TOKEN', $auth['token']);
 define('SECRET', $auth['secret']);
 
 $user = get_ip_auth();
+// var_dump($user);
+if ( $auth && !$user ) {
+	do_logout();
+	return do_redirect('login', array('error' => '$user'));
+}
 define('BOOKMARKS_CACHE_FILE', 'db/' . $user['user'] . '.json');
 
 

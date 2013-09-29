@@ -21,7 +21,13 @@ if ( isset($_POST['user'], $_POST['pass']) ) {
 	exit;
 }
 
+$error = @$_GET['error'];
+
 ?>
+
+<? if ($error): ?>
+	<p class="error">Error: <?= html($error) ?></p>
+<? endif ?>
 
 <form method="post" action>
 	<p>E-mail: <input type="email" name="user" autofocus /></p>
