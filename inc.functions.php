@@ -2,6 +2,24 @@
 
 require 'inc.http.php';
 
+function do_favorite($id, $action = 'star') {
+	$method = 'POST';
+	$url = 'https://www.instapaper.com/api/1/bookmarks/' . $action;
+	$data = array('bookmark_id' => $id);
+
+	$http = sign_request($method, $url, $data, SECRET);
+	$response = $http->request();
+
+	$encoded_response = $response->body;
+	$decoded_response = json_decode($encoded_response);
+
+	$bookmarks = do_filter_bookmarks($decoded_response);
+
+	if ( !empty($bookmarks[0]->bookmark_id) ) {
+		return $bookmarks[0];
+	}
+}
+
 function do_logout() {
 	setcookie('ip_auth', '', 1);
 	setcookie('oauth_auth', '', 1);
@@ -112,9 +130,7 @@ function ip_authorize( $user, $pass, &$error = array() ) {
 function do_archive( $id ) {
 	$method = 'POST';
 	$url = 'https://www.instapaper.com/api/1/bookmarks/archive';
-	$data = array(
-		'bookmark_id' => $id,
-	);
+	$data = array('bookmark_id' => $id);
 
 	$http = sign_request($method, $url, $data, SECRET);
 	$response = $http->request();
@@ -136,7 +152,13 @@ function do_filter_bookmarks( $items ) {
 }
 
 function set_bookmarks( $bookmarks ) {
-	file_put_contents(BOOKMARKS_CACHE_FILE, json_encode($bookmarks));
+	$keyed = array();
+	foreach ( $bookmarks as $bm ) {
+		$keyed[ 'bm_' . $bm->bookmark_id ] = $bm;
+	}
+
+	file_put_contents(BOOKMARKS_CACHE_FILE, json_encode($keyed));
+	return $bookmarks;
 }
 
 function get_bookmarks( &$refresh = false ) {
@@ -166,10 +188,10 @@ function get_bookmarks( &$refresh = false ) {
 
 		$bookmarks = do_filter_bookmarks($decoded_response);
 
-		set_bookmarks($bookmarks);
+		$bookmarks = set_bookmarks($bookmarks);
 	}
 
-	return $bookmarks;
+	return (array)$bookmarks;
 }
 
 function sign_request( $method, $url, &$data, $secret = '' ) {
