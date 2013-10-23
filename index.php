@@ -43,6 +43,8 @@ if ( $refresh ) {
 
 $refreshed = $refresh;
 $bookmarks = get_bookmarks($refreshed);
+$total = count($bookmarks);
+$bookmarks = array_slice($bookmarks, 0, 20);
 
 ?>
 <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
@@ -52,7 +54,7 @@ $bookmarks = get_bookmarks($refreshed);
 <?php
 
 $fresh = $refreshed ? ' (fresh)' : '';
-echo '<h3>' . count($bookmarks) . ' bookmarks' . $fresh . ' <span class="sub">(<a onclick="document.cookie=\'iprefr=1\';" href="">refresh</a>)</span></h3>';
+echo '<h3>' . count($bookmarks) . ' / ' . $total . ' bookmarks' . $fresh . ' <span class="sub">(<a onclick="document.cookie=\'iprefr=1\';" href="">refresh</a>)</span></h3>';
 echo '<ol class="bookmarks">';
 foreach ( $bookmarks as $bm ) {
 	$id = $bm->bookmark_id;
