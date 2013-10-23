@@ -28,9 +28,11 @@ if ( isset($_GET['archive']) ) {
 			}
 		}
 		set_bookmarks(array_values($bookmarks));
+
+		exit('OK');
 	}
 
-	return do_redirect('index');
+	exit('Some error!?');
 }
 
 
@@ -77,3 +79,17 @@ foreach ( $bookmarks as $bm ) {
 	echo '</li>';
 }
 echo '</ol>';
+
+?>
+<script>
+<?= file_get_contents('framework.js') ?>
+
+document.querySelector('.bookmarks').addEventListener('click', function(e) {
+	if ( e.target.is('.archive > a') ) {
+		e.preventDefault();
+		ajax(e.target.href, function(t) {
+			t == 'OK' ? location.reload() : alert(t);
+		});
+	}
+});
+</script>
