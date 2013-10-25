@@ -2,6 +2,18 @@
 
 require 'inc.http.php';
 
+function is_logged_in( $redirect ) {
+  if ( $token = ip_token($redirect) ) {
+    defined('TOKEN') or define('TOKEN', $token['token']);
+    defined('SECRET') or define('SECRET', $token['secret']);
+
+    if ( $user = get_ip_auth() ) {
+      defined('BOOKMARKS_CACHE_FILE') or define('BOOKMARKS_CACHE_FILE', 'db/' . $user['user'] . '.json');
+      return true;
+    }
+  }
+}
+
 function do_favorite($id, $action = 'star') {
 	$method = 'POST';
 	$url = 'https://www.instapaper.com/api/1/bookmarks/' . $action;

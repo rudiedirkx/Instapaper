@@ -2,18 +2,7 @@
 
 require 'inc.bootstrap.php';
 
-$auth = ip_token();
-// var_dump($auth);
-define('TOKEN', $auth['token']);
-define('SECRET', $auth['secret']);
-
-$user = get_ip_auth();
-// var_dump($user);
-if ( $auth && !$user ) {
-	do_logout();
-	return do_redirect('login', array('error' => '$user'));
-}
-define('BOOKMARKS_CACHE_FILE', 'db/' . $user['user'] . '.json');
+is_logged_in(true);
 
 
 
@@ -99,6 +88,9 @@ foreach ( $bookmarks as $bm ) {
 echo '</ol>';
 
 ?>
+
+<p>Bookmarklet: <a href="bookmarklet.php" onmouseover="this.onmouseover=null; this.href='javascript: document.head.appendChild((function(el) { el.src=\'BASE?url=\' + encodeURIComponent(location.href) + \'&title=\' + encodeURIComponent(document.title); return el; })(document.createElement(\'script\'))); void(0)'.replace(/BASE/, this.href)">Read me later</a></p>
+
 <script>
 <?= file_get_contents('framework.js') ?>
 </script>
