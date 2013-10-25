@@ -3,15 +3,15 @@
 require 'inc.http.php';
 
 function is_logged_in( $redirect ) {
-  if ( $token = ip_token($redirect) ) {
-    defined('TOKEN') or define('TOKEN', $token['token']);
-    defined('SECRET') or define('SECRET', $token['secret']);
+	if ( $token = ip_token($redirect) ) {
+		defined('TOKEN') or define('TOKEN', $token['token']);
+		defined('SECRET') or define('SECRET', $token['secret']);
 
-    if ( $user = get_ip_auth() ) {
-      defined('BOOKMARKS_CACHE_FILE') or define('BOOKMARKS_CACHE_FILE', 'db/' . $user['user'] . '.json');
-      return true;
-    }
-  }
+		if ( $user = get_ip_auth() ) {
+			defined('BOOKMARKS_CACHE_FILE') or define('BOOKMARKS_CACHE_FILE', 'db/' . $user['user'] . '.json');
+			return true;
+		}
+	}
 }
 
 function do_favorite($id, $action = 'star') {
@@ -218,22 +218,14 @@ function sign_request( $method, $url, &$data, $secret = '' ) {
 
 	ksort($data);
 	$signatureBaseString = $method . '&' . urlencode_rfc3986($url) . '&' . urlencode_rfc3986(http_build_query($data));
-
 	$signatureKey = urlencode_rfc3986(OAUTH_SECRET) . '&' . urlencode_rfc3986($secret);
 	$signature = base64_encode(hash_hmac('sha1', $signatureBaseString, $signatureKey, true));
 
 	$data['oauth_signature'] = $signature;
 
-	// $componentData = array_intersect_key($data, array_flip(array('oauth_consumer_key', 'oauth_token', 'oauth_signature_method', 'oauth_signature', 'oauth_timestamp', 'oauth_nonce', 'oauth_version')));
-	// $components = array('realm="' . $url . '"');
-	// foreach ( $componentData AS $cn => $cv ) {
-		// $components[] = $cn . '="' . $cv . '"';
-	// }
-
 	$http = HTTP::create($url, array(
 		'method' => $method,
 		'data' => $data,
-		// 'headers' => array('Authorization: OAuth ' . implode(', ', $components)),
 	));
 	return $http;
 }
