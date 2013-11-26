@@ -3,6 +3,8 @@
 require 'inc.bootstrap.php';
 
 if ( isset($_POST['user'], $_POST['pass']) ) {
+	setcookie('ip_user', $_POST['user']);
+
 	$auth = ip_authorize($_POST['user'], $_POST['pass'], $error);
 	if ( $auth ) {
 		$expire = strtotime('+1 year');
@@ -30,8 +32,8 @@ $error = @$_GET['error'];
 <? endif ?>
 
 <form method="post" action>
-	<p>E-mail: <input type="email" name="user" autofocus /></p>
-	<p>Password: <input type="password" name="pass" /></p>
+	<p>E-mail: <input type="email" name="user" value="<?= @$_COOKIE['ip_user'] ?>" required /></p>
+	<p>Password: <input type="password" name="pass" required /></p>
 	<p><input type="submit" value="Log in" /></p>
 </form>
 
