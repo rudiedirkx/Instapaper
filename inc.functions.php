@@ -192,7 +192,7 @@ function get_bookmarks( &$refresh = false ) {
 
 		if ( $response->code != 200 ) {
 			do_logout();
-			return do_redirect('login', array('error' => $response->code));
+			return do_redirect('login', array('error' => $response->response[0]->message, 'errno' => $response->code));
 		}
 
 		$encoded_response = $response->body;
